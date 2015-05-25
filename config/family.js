@@ -21,7 +21,7 @@ var loadFamily = function () {
         .then(function (response) {
             console.log();
             console.log('WELCOME, ' + response.family.display_name);
-            deferred.resolve();
+            deferred.resolve(response.family);
         });
 
     return deferred.promise;

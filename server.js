@@ -10,47 +10,45 @@ var config = require('./config/config'),
     loadFamily = require('./config/family'),
     loadItems = require('./config/items'),
     loadPrograms = require('./config/programs'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    InfiniteLoop = require('infinite-loop'),
+    events = require('events'),
+    eventEmitter = new events.EventEmitter();
 
 console.log('Starting ' + config.appName + '...');
 
 console.log();
 console.log('Using web service URL: ' + config.webServiceUrl);
 
-var familyItems,
+var family,
+    familyItems,
     familyPrograms;
 
 loadFamily()
-    .then(function () {
-        return loadItems();
+    .then(function (f) {
+        family = f;
+    
+        return loadItems(family);
     })
     .then(function (items) {
         familyItems = items;
     
-        return loadPrograms();
+        return loadPrograms(family, familyItems, eventEmitter);
     })
     .then(function (programs) {
         familyPrograms = programs;
-    
-        console.log();
-        console.log('Running programs!');
-        console.log('********************************************************');
-    
-        //console.log('THERE ARE ' + familyItems.length + ' items');
-        //console.log(familyItems);
-        
-        _.forEach(familyItems, function (i) {
-            
-            var scripts = _.filter(familyPrograms, 'item_id', i.item_id);
-            
-            //console.log('TITLE: ' + i.title);
-            //console.log(scripts);
-            
-            _.forEach(scripts, function (script) {
-                eval(script.code);
-            });
-        });
         
         console.log();
-        console.log('Done for now');
+        console.log('Waiting for something to happen....');
+    
+        var il = new InfiniteLoop;
+        function wait() {
+            
+            console.log('Tick.');
+            eventEmitter.emit('tick');
+        }
+        il.setInterval(1000);
+        il.add(wait);
+        il.run();
+
     });

@@ -6,16 +6,18 @@
 
 var config = require('./config'),
     Promise = require('bluebird'),
-    service = require('../service');
+    service = require('../service'),
+    _ = require('lodash'),
+    events = require('events');
 
-var loadPrograms = function () {
+var loadPrograms = function (family, familyItems, eventEmitter) {
     var deferred = Promise.defer();
 
     console.log();
-    console.log('Loading programs for family ID ' + config.familyId);
+    console.log('Loading programs for ' + family.display_name);
 
     var requestData = {
-        family_id: config.familyId
+        family_id: family.family_id
     };
     service.call('api/Program/GetAll', requestData)
         .then(function (response) {
@@ -23,10 +25,36 @@ var loadPrograms = function () {
             //console.log();
             //console.log('YOUR PROGRAMS:');
             //console.log(response.program_scripts);
-            deferred.resolve(response.program_scripts);
+        
+            var familyPrograms = response.program_scripts;    
+            runPrograms(familyItems, familyPrograms, eventEmitter);
+
+            deferred.resolve(familyPrograms);
         });
 
     return deferred.promise;
+};
+
+var runPrograms = function (familyItems, familyPrograms, eventEmitter) {
+    console.log();
+    console.log('Running programs!');
+    console.log('********************************************************');
+
+    //console.log('THERE ARE ' + familyItems.length + ' items');
+    //console.log(familyItems);
+
+    _.forEach(familyItems, function (i) {
+
+        var scripts = _.filter(familyPrograms, 'item_id', i.item_id);
+
+        //console.log('TITLE: ' + i.title);
+        //console.log(scripts);
+
+        _.forEach(scripts, function (script) {
+            var emitter = eventEmitter;
+            eval(script.code);
+        });
+    });    
 };
 
 module.exports = loadPrograms;
