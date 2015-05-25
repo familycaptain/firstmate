@@ -2,21 +2,25 @@
 
 /*jslint node: true */
 /*jslint nomen: true*/
+/*jslint evil: true */
 'use strict';
 
 var config = require('./config'),
     Promise = require('bluebird'),
     service = require('../service'),
     _ = require('lodash'),
-    events = require('events');
+    events = require('events'),
+    loadPrograms,
+    runPrograms;
 
-var loadPrograms = function (family, familyItems, scriptApi) {
-    var deferred = Promise.defer();
+loadPrograms = function (family, familyItems, scriptApi) {
+    var deferred = Promise.defer(),
+        requestData;
 
     console.log();
     console.log('Loading programs for ' + family.display_name);
 
-    var requestData = {
+    requestData = {
         family_id: family.family_id
     };
     service.call('/Program/GetAll', requestData)
@@ -26,7 +30,7 @@ var loadPrograms = function (family, familyItems, scriptApi) {
             //console.log('YOUR PROGRAMS:');
             //console.log(response.program_scripts);
         
-            var familyPrograms = response.program_scripts;    
+            var familyPrograms = response.program_scripts;
             runPrograms(familyItems, familyPrograms, scriptApi);
 
             deferred.resolve(familyPrograms);
@@ -35,7 +39,7 @@ var loadPrograms = function (family, familyItems, scriptApi) {
     return deferred.promise;
 };
 
-var runPrograms = function (familyItems, familyPrograms, scriptApi) {
+runPrograms = function (familyItems, familyPrograms, scriptApi) {
     console.log();
     console.log('********************************************************');
     console.log('Running programs!');
@@ -56,7 +60,7 @@ var runPrograms = function (familyItems, familyPrograms, scriptApi) {
             
             eval(script.code);
         });
-    });    
+    });
     
     console.log('DONE.');
 };
