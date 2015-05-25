@@ -52,6 +52,7 @@ var runPrograms = function (familyItems, familyPrograms, scriptApi) {
 
         _.forEach(scripts, function (script) {
             var FM = scriptApi;
+            FM.currentItem = i;
             
             eval(script.code);
         });

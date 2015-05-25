@@ -50,8 +50,9 @@ initApi(eventEmitter)
     
         var il = new InfiniteLoop;
         function tick() {            
-            console.log('Tick ' + (new Date()).toLocaleTimeString());
-            eventEmitter.emit('tick');
+            FM.debug();
+            FM.debug('Tick ' + (new Date()).toLocaleTimeString());
+            FM.emit('tick');
             
             if (FM.timedEvent) {
                 var d = new Date();
