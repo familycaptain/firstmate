@@ -10,7 +10,7 @@ var config = require('./config'),
     _ = require('lodash'),
     events = require('events');
 
-var loadPrograms = function (family, familyItems, eventEmitter) {
+var loadPrograms = function (family, familyItems, scriptApi) {
     var deferred = Promise.defer();
 
     console.log();
@@ -27,7 +27,7 @@ var loadPrograms = function (family, familyItems, eventEmitter) {
             //console.log(response.program_scripts);
         
             var familyPrograms = response.program_scripts;    
-            runPrograms(familyItems, familyPrograms, eventEmitter);
+            runPrograms(familyItems, familyPrograms, scriptApi);
 
             deferred.resolve(familyPrograms);
         });
@@ -35,7 +35,7 @@ var loadPrograms = function (family, familyItems, eventEmitter) {
     return deferred.promise;
 };
 
-var runPrograms = function (familyItems, familyPrograms, eventEmitter) {
+var runPrograms = function (familyItems, familyPrograms, scriptApi) {
     console.log();
     console.log('Running programs!');
     console.log('********************************************************');
@@ -51,7 +51,8 @@ var runPrograms = function (familyItems, familyPrograms, eventEmitter) {
         //console.log(scripts);
 
         _.forEach(scripts, function (script) {
-            var emitter = eventEmitter;
+            var FM = scriptApi;
+            
             eval(script.code);
         });
     });    

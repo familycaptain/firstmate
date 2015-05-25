@@ -7,6 +7,7 @@ console.log();
 require('dotenv').load();
 
 var config = require('./config/config'),
+    initApi = require('./config/api'),
     loadFamily = require('./config/family'),
     loadItems = require('./config/items'),
     loadPrograms = require('./config/programs'),
@@ -20,11 +21,17 @@ console.log('Starting ' + config.appName + '...');
 console.log();
 console.log('Using web service URL: ' + config.webServiceUrl);
 
-var family,
+var FM,
+    family,
     familyItems,
     familyPrograms;
 
-loadFamily()
+initApi(eventEmitter)
+    .then(function (scriptApi) {
+        FM = scriptApi;
+    
+        return loadFamily();
+    })
     .then(function (f) {
         family = f;
     
@@ -33,7 +40,7 @@ loadFamily()
     .then(function (items) {
         familyItems = items;
     
-        return loadPrograms(family, familyItems, eventEmitter);
+        return loadPrograms(family, familyItems, FM);
     })
     .then(function (programs) {
         familyPrograms = programs;
@@ -42,13 +49,24 @@ loadFamily()
         console.log('Waiting for something to happen....');
     
         var il = new InfiniteLoop;
-        function wait() {
-            
-            console.log('Tick.');
+        function tick() {            
+            console.log('Tick ' + (new Date()).toLocaleTimeString());
             eventEmitter.emit('tick');
+            
+            if (FM.timedEvent) {
+                var d = new Date();
+                if (d.getHours() == FM.timedEvent.hour &&
+                    d.getMinutes() == FM.timedEvent.minute &&
+                    d.getSeconds() == FM.timedEvent.second) {
+                    
+                    FM.timedEvent.callback();
+                    FM.timedEvent = null;
+                }
+            }
+            
         }
         il.setInterval(1000);
-        il.add(wait);
+        il.add(tick);
         il.run();
 
     });
