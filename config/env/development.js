@@ -1,3 +1,3 @@
 module.exports = {
-    webServiceUrl: 'http://localhost:3000'
+    webServiceUrl: 'http://localhost:3000/api'
 };

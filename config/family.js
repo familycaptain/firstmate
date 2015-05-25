@@ -17,7 +17,7 @@ var loadFamily = function () {
     var requestData = {
         family_id: config.familyId
     };
-    service.call('api/Family/Get', requestData)
+    service.call('/Family/Get', requestData)
         .then(function (response) {
             console.log();
             console.log('WELCOME, ' + response.family.display_name);

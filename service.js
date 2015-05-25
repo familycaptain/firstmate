@@ -9,7 +9,7 @@ var config = require('./config/config'),
 module.exports = {
     call: function (route, requestData) {
 
-        var url = config.webServiceUrl + '/' + route,
+        var url = config.webServiceUrl + route,
             deferred = Promise.defer();
 
         //console.log('REQUEST: ' + route + ' -> ' + JSON.stringify(requestData));

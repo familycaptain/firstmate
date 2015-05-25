@@ -17,7 +17,7 @@ var loadItems = function (family) {
     var requestData = {
         family_id: family.family_id
     };
-    service.call('api/Item/GetAll', requestData)
+    service.call('/Item/GetAll', requestData)
         .then(function (response) {
             console.log('  Done!');
             //console.log();

@@ -19,7 +19,7 @@ var loadPrograms = function (family, familyItems, scriptApi) {
     var requestData = {
         family_id: family.family_id
     };
-    service.call('api/Program/GetAll', requestData)
+    service.call('/Program/GetAll', requestData)
         .then(function (response) {
             console.log('  Done!');
             //console.log();
@@ -37,8 +37,8 @@ var loadPrograms = function (family, familyItems, scriptApi) {
 
 var runPrograms = function (familyItems, familyPrograms, scriptApi) {
     console.log();
-    console.log('Running programs!');
     console.log('********************************************************');
+    console.log('Running programs!');
 
     //console.log('THERE ARE ' + familyItems.length + ' items');
     //console.log(familyItems);
@@ -47,7 +47,7 @@ var runPrograms = function (familyItems, familyPrograms, scriptApi) {
 
         var scripts = _.filter(familyPrograms, 'item_id', i.item_id);
 
-        //console.log('TITLE: ' + i.title);
+        console.log('TITLE: ' + i.title);
         //console.log(scripts);
 
         _.forEach(scripts, function (script) {
@@ -57,6 +57,8 @@ var runPrograms = function (familyItems, familyPrograms, scriptApi) {
             eval(script.code);
         });
     });    
+    
+    console.log('DONE.');
 };
 
 module.exports = loadPrograms;
