@@ -12,7 +12,7 @@ module.exports = {
         var url = config.webServiceUrl + '/' + route,
             deferred = Promise.defer();
 
-        console.log('REQUEST: ' + route + ' -> ' + JSON.stringify(requestData));
+        //console.log('REQUEST: ' + route + ' -> ' + JSON.stringify(requestData));
 
         request({
             method: 'POST',
@@ -24,7 +24,7 @@ module.exports = {
                 console.error('failed:', error);
                 deferred.reject();
             }
-            console.log('RESPONSE: ', body);
+            //console.log('RESPONSE: ', body);
 
             deferred.resolve(body);
         });
