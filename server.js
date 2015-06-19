@@ -60,8 +60,9 @@ initApi(eventEmitter)
                     d.getMinutes() == FM.timedEvent.minute &&
                     d.getSeconds() == FM.timedEvent.second) {
                     
-                    FM.timedEvent.callback();
+                    var callback = FM.timedEvent.callback;
                     FM.timedEvent = null;
+                    callback();                    
                 }
             }
             
